@@ -1,0 +1,48 @@
+.gp-banner {
+  display: flex;
+  flex-direction: row;
+  //justify-content: space-between;
+  &-logo {
+    border: 1px none red;
+    padding: 0px;
+    
+    width: 300px;
+    margin-right: 25px;
+  }
+
+  &-item {
+    border: 1px none red !important;
+    width: 10%;
+    text-align: center !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    font-weight: bold !important;
+    font-size: 20px !important;
+  }
+}
+
+@media (max-width: 899px) {
+  #logo-{
+      &desk{
+          background-color: ghostwhite;
+          display: none;
+      }
+      &mobile{
+          display: flex;
+          justify-content: center;
+      }
+  }
+}
+@media (min-width: 900px) {
+    #logo-{
+        &desk{
+            display: flex;
+            justify-content: center;
+            
+        }
+        &mobile{
+            
+            display: none;
+        }
+    }
+  }
