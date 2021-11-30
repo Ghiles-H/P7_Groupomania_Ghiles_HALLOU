@@ -1,3 +1,7 @@
+.MuiAppBar-colorPrimary {
+  background-color: red !important;
+}
+
 .gp-banner {
   display: -webkit-box;
   display: -ms-flexbox;
