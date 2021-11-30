@@ -1,4 +1,4 @@
-import logoWhite from "../assets/groupomania_assets/icon-left-font-monochrome-white.png";
+import logoWhite from "../assets/groupomania_assets/icon-left-font-monochrome-white-r.png";
 import logoR from "../assets/groupomania_assets/icon-left-font-r.png";
 import "../styles/Banner.css";
 
