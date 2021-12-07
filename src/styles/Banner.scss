@@ -1,5 +1,5 @@
-.MuiAppBar-colorPrimary{
-    background-color: red !important;
+.MuiAppBar-colorPrimary {
+  background-color: red !important;
 }
 .gp-banner {
   display: flex;
@@ -8,7 +8,6 @@
   &-logo {
     border: 1px none red;
     padding: 0px;
-    
     width: 300px;
     margin-right: 25px;
   }
@@ -18,34 +17,32 @@
     width: 10%;
     text-align: center !important;
     display: flex !important;
-    justify-content: space-between !important;
+    //justify-content: space-between !important;
     font-weight: bold !important;
     font-size: 20px !important;
   }
 }
 
 @media (max-width: 899px) {
-  #logo-{
-      &desk{
-          background-color: ghostwhite;
-          display: none;
-      }
-      &mobile{
-          display: flex;
-          justify-content: center;
-      }
+  #logo- {
+    &desk {
+      background-color: ghostwhite;
+      display: none;
+    }
+    &mobile {
+      display: flex;
+      justify-content: center;
+    }
   }
 }
 @media (min-width: 900px) {
-    #logo-{
-        &desk{
-            display: flex;
-            justify-content: center;
-            
-        }
-        &mobile{
-            
-            display: none;
-        }
+  #logo- {
+    &desk {
+      display: flex;
+      justify-content: center;
+    }
+    &mobile {
+      display: none;
     }
   }
+}
