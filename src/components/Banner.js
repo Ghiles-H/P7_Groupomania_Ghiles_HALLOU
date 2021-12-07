@@ -1,5 +1,5 @@
 import logoWhite from "../assets/groupomania_assets/icon-left-font-monochrome-white-r.png";
-import logoR from "../assets/groupomania_assets/icon-left-font-r.png";
+//import logoR from "../assets/groupomania_assets/icon-left-font-r.png";
 import "../styles/Banner.css";
 
 /* const Banner = () => {
@@ -115,7 +115,7 @@ const ResponsiveAppBar = () => {
             className="gp-banner-logo mobile"
             id="logo-mobile"
           />
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} id = "loginOn">
             {pages.map((page) => (
               <Button
                 key={page}
@@ -163,3 +163,5 @@ const ResponsiveAppBar = () => {
   );
 };
 export default ResponsiveAppBar;
+
+

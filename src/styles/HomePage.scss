@@ -1,0 +1,19 @@
+.homePost{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.noBannerPart{
+    display: flex;
+    flex-direction: row;
+}
+
+.usersPart{
+    width: 15%;
+}
+.postsPart{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 85%;
+}
