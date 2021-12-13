@@ -2,30 +2,6 @@ import logoWhite from "../assets/groupomania_assets/icon-left-font-monochrome-wh
 //import logoR from "../assets/groupomania_assets/icon-left-font-r.png";
 import "../styles/Banner.css";
 
-/* const Banner = () => {
-  return (
-    <div className="gp-banner">
-      <img src={logoR} alt="groupomania" className="gp-banner-logo" />
-      <div className='gp-banner-link'>
-      <a className="gp-banner-link-single home" href="#">
-        Home
-      </a>
-      <a className="gp-banner-link-single profil" href="#">
-        Profil
-      </a>
-      <a className="gp-banner-link-single search" href="#">
-        Search
-      </a>
-      <a className="gp-banner-link-single logout" href="#">
-        Log Out
-      </a>
-      </div>
-    </div>
-  );
-
-};
-export default Banner; */
-
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";

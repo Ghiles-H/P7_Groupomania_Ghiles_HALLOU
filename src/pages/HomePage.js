@@ -1,6 +1,6 @@
 // Import
-import ResponsiveAppBar from "./Banner";
-import RecipeReviewCard from "./Posts";
+import ResponsiveAppBar from "../components/Banner";
+import RecipeReviewCard from "../components/Posts";
 import "../styles/HomePage.css";
 // Components
 function Home() {
