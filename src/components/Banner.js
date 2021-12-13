@@ -1,30 +1,6 @@
 import logoWhite from "../assets/groupomania_assets/icon-left-font-monochrome-white-r.png";
-import logoR from "../assets/groupomania_assets/icon-left-font-r.png";
+//import logoR from "../assets/groupomania_assets/icon-left-font-r.png";
 import "../styles/Banner.css";
-
-/* const Banner = () => {
-  return (
-    <div className="gp-banner">
-      <img src={logoR} alt="groupomania" className="gp-banner-logo" />
-      <div className='gp-banner-link'>
-      <a className="gp-banner-link-single home" href="#">
-        Home
-      </a>
-      <a className="gp-banner-link-single profil" href="#">
-        Profil
-      </a>
-      <a className="gp-banner-link-single search" href="#">
-        Search
-      </a>
-      <a className="gp-banner-link-single logout" href="#">
-        Log Out
-      </a>
-      </div>
-    </div>
-  );
-
-};
-export default Banner; */
 
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
@@ -115,7 +91,7 @@ const ResponsiveAppBar = () => {
             className="gp-banner-logo mobile"
             id="logo-mobile"
           />
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} id = "loginOn">
             {pages.map((page) => (
               <Button
                 key={page}
@@ -163,3 +139,5 @@ const ResponsiveAppBar = () => {
   );
 };
 export default ResponsiveAppBar;
+
+
