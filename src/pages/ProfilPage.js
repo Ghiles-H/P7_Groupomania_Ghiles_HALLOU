@@ -1,6 +1,9 @@
+import ResponsiveAppBar from "../components/Banner";
+
 const Profil = () => {
   return (
     <div className="profil">
+      <ResponsiveAppBar />
       <h1>Profil</h1>
       <br />
       <p>
@@ -31,3 +34,5 @@ const Profil = () => {
     </div>
   );
 }
+
+export default Profil;

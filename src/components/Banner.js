@@ -15,6 +15,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import { NavLink } from "react-router-dom";
 
 const pages = ["Home", "Profil"];
 const settings = ["Dashboard", "Account", "Logout"];
@@ -99,7 +100,9 @@ const ResponsiveAppBar = () => {
                 sx={{ my: 2, color: "white", display: "block" }}
                 className="gp-banner-item"
               >
-                {page}
+                <NavLink exact to={"/" + page} className='gp-banner-link'>
+                  {page}
+                </NavLink>
               </Button>
             ))}
           </Box>

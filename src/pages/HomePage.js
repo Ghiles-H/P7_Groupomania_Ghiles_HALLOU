@@ -20,10 +20,6 @@ function Home() {
         <div className="postsPart">
           <RecipeReviewCard />
           <RecipeReviewCard />
-          <RecipeReviewCard />
-          <RecipeReviewCard />
-          <RecipeReviewCard />
-          <RecipeReviewCard />
         </div>
       </div>
     </div>

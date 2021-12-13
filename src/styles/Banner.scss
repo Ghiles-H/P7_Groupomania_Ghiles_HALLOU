@@ -20,9 +20,15 @@
     //justify-content: space-between !important;
     font-weight: bold !important;
     font-size: 20px !important;
+    color: white !important;
+  }
+  &-link{
+    color: white;
+    text-decoration: none;
+    
   }
 }
-
+ 
 @media (max-width: 899px) {
   #logo- {
     &desk {

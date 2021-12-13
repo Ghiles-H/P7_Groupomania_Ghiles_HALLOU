@@ -28,6 +28,12 @@
   display: flex !important;
   font-weight: bold !important;
   font-size: 20px !important;
+  color: white !important;
+}
+
+.gp-banner-link {
+  color: white;
+  text-decoration: none;
 }
 
 @media (max-width: 899px) {
