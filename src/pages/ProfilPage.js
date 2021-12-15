@@ -1,4 +1,54 @@
 import ResponsiveAppBar from "../components/Banner";
+import "../styles/ProfilPage.css";
+import profilDefaultImage from "../assets/images/profil_img/defaultProfil_Img.jpg";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+
+export function SimpleBottomNavigation() {
+  const [value, setValue] = React.useState(0);
+
+  return (
+    <Box >
+      <BottomNavigation className="bottom-menu"
+        showLabels
+        value={value}
+        onChange={(event, newValue) => {
+          setValue(newValue);
+        }}
+      >
+        <BottomNavigationAction label="Mes posts" className="bottom-menu-item"/>
+        <BottomNavigationAction label="Mes commantaires" className="bottom-menu-item"/>
+        <BottomNavigationAction label="Mes likes" className="bottom-menu-item"/>
+      </BottomNavigation>
+    </Box>
+  );
+}
+
+const info = {
+  firstName: "Default",
+  lastName: "Name",
+  srcImg: {profilDefaultImage},
+  city: "Paris",
+  job: "MyJob",
+};
+
+const personalInfo = () => {
+  return (
+    <div className="personalInfo">
+      <img src={profilDefaultImage} alt="profil_image" className="personalInfo-img" />
+      <div className="personalInfo-block">
+        <h2 className="personalInfo-name">
+          {info.firstName} {info.lastName}
+        </h2>
+        <p>Ville : {info.city}</p>
+        <p>Poste : {info.job}</p>
+      </div>
+    </div>
+  );
+};
+
 
 const Profil = () => {
   return (
@@ -6,33 +56,10 @@ const Profil = () => {
       <ResponsiveAppBar />
       <h1>Profil</h1>
       <br />
-      <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo
-        sapiente eum deleniti architecto. Laudantium provident reprehenderit
-        dolor voluptatum impedit corporis amet, corrupti saepe error nostrum
-        recusandae nulla. Saepe soluta unde harum laudantium illum voluptatem
-        mollitia dolorum et, consequatur deleniti eos minus quas temporibus
-        modi, fugiat odit culpa perspiciatis debitis amet commodi molestiae!
-        Dolores tenetur illo ducimus laborum? Ad, quod consequuntur.
-      </p>
-      <br />
-      <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Explicabo
-        sapiente eum deleniti architecto. Laudantium provident reprehenderit
-        dolor voluptatum impedit corporis amet, corrupti saepe error nostrum
-        recusandae nulla. Saepe soluta unde harum laudantium illum voluptatem
-        mollitia dolorum et, consequatur deleniti eos minus quas temporibus
-        modi, fugiat odit culpa perspiciatis debitis amet commodi molestiae!
-        Dolores tenetur illo ducimus laborum? Ad, quod consequuntur.
-      </p>
-      <br />
-      <p>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Commodi eum at
-        hic! Praesentium quasi ratione a at, iure officia velit! Nostrum tempora
-        fugit quasi delectus deleniti? Iusto vero distinctio architecto.
-      </p>
+      {personalInfo()}
+      {SimpleBottomNavigation()}
     </div>
   );
-}
+};
 
 export default Profil;

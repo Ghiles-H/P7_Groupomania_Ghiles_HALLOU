@@ -17,6 +17,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 // ------ Custom Import -------
 import "../styles/Post.css";
+import image from "../assets/images/Gojo_wallpaper.jpg"
 
 // ----- Components --------
 const ExpandMore = styled((props) => {
@@ -56,8 +57,8 @@ export default function RecipeReviewCard() {
       <CardMedia
         component="img"
         height="194"
-        image="src/assets/images/Gojo_wallpaper.jpg"
-        alt="Gojo Satoru"
+        image={image}
+        /* alt="Gojo Satoru" */
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary" id="CardText">

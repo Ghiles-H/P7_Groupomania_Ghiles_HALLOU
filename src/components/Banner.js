@@ -17,7 +17,7 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { NavLink } from "react-router-dom";
 
-const pages = ["Home", "Profil"];
+const pages = ["Home", "Profil", "Login"];
 const settings = ["Dashboard", "Account", "Logout"];
 
 const ResponsiveAppBar = () => {

@@ -1,5 +1,6 @@
+$bg-color: rgb(151, 10, 10);
 .MuiAppBar-colorPrimary {
-  background-color: red !important;
+  background-color: $bg-color !important;
 }
 .gp-banner {
   display: flex;
@@ -39,6 +40,8 @@
       display: flex;
       justify-content: center;
       width: 50%;
+      margin-right: calc(25% - 25px);
+      //width: calc(100% - 52px);
     }
   }
 }
