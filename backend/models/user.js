@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     bio: DataTypes.STRING,
     isAdmin: DataTypes.BOOLEAN,
     city: DataTypes.STRING,
-    job: DataTypes.STRING
+    job: DataTypes.STRING,
+    imgUrl: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User',

@@ -16,7 +16,7 @@ module.exports = {
     var email = req.body.email;
     var firstname = req.body.firstname;
     var lastname = req.body.lastname;
-    var username = req.body.username;
+    var imgUrl = req.body.imgUrl;
     var password = req.body.password;
 
     if (email == null || password == null) {
@@ -66,14 +66,17 @@ module.exports = {
         function (userFound, bcryptedPassword, done) {
           var newUser = models.User.create({
             email: email,
-            username: username,
+            firstname: firstname,
+            lastname: lastname,
             password: bcryptedPassword,
+            imgUrl: imgUrl,
             isAdmin: 0,
           })
             .then(function (newUser) {
               done(newUser);
             })
             .catch(function (err) {
+              console.log(err);
               return res.status(500).json({ error: "cannot add user" });
             });
         },
@@ -164,7 +167,7 @@ module.exports = {
     if (userId < 0) {
       console.log("USER ID ", userId);
       console.log("HEADERAUTH ", req.headers["authorization"]);
-      return res.status(400).json({ error: "wrong token" });
+      return res.status(401).json({ error: "wrong token" });
     } else {
       models.User.findOne({
         attributes: [
@@ -196,6 +199,8 @@ module.exports = {
     var userId = jwtUtils.getUserId(headerAuth);
 
     //Params
+    var firstname = req.body.firstname;
+    var lastname = req.body.lastname;
     var bio = req.body.bio;
     var city = req.body.city;
     var job = req.body.job;
@@ -204,7 +209,7 @@ module.exports = {
       [
         function (done) {
           models.User.findOne({
-            attributes: ["id", "bio", "city", "job"],
+            attributes: ["id", "firstname", "lastname", "bio", "city", "job"],
             where: { id: userId },
           })
             .then(function (userFound) {
@@ -221,6 +226,8 @@ module.exports = {
                 bio: bio ? bio : userFound.bio,
                 city: city ? city : userFound.city,
                 job: job ? job : userFound.job,
+                firstname: firstname ? firstname : userFound.firstname,
+                lastname: lastname ? lastname : userFound.lastname,
               })
               .then(function () {
                 done(userFound);
@@ -241,5 +248,30 @@ module.exports = {
         }
       }
     );
+  },
+  deleteUser: function (req, res) {
+    //Getting auth header
+    var headerAuth = req.headers["authorization"];
+    var userId = jwtUtils.getUserId(headerAuth);
+
+    if (userId < 0) {
+      console.log("USER ID ", userId);
+      console.log("HEADERAUTH ", req.headers["authorization"]);
+      return res.status(400).json({ error: "wrong token" });
+    } else {
+      models.User.destroy({
+        where: { id: userId },
+      })
+        .then(function (rowDeleted) {
+          if (rowDeleted === 1) {
+            res.status(201).json("Le user a été supprimé");
+          } else {
+            res.status(404).json({ error: "user not found" });
+          }
+        })
+        .catch(function (err) {
+          res.status(500).json({ error: "cannot fetch user" });
+        });
+    }
   },
 };

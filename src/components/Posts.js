@@ -43,7 +43,7 @@ export default function RecipeReviewCard() {
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
+            G
           </Avatar>
         }
         action={
@@ -51,7 +51,7 @@ export default function RecipeReviewCard() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
+        title = "RecipeReviewCard Title"
         subheader="September 14, 2016"
       />
       <CardMedia
