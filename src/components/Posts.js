@@ -37,7 +37,7 @@ export default function RecipeReviewCard() {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-
+  
   return (
     <Card sx={{ maxWidth: 700 }} id="postCard">
       <CardHeader

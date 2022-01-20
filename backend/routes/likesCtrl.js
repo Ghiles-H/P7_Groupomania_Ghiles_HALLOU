@@ -92,28 +92,29 @@ module.exports = {
                 res.status(409).json({'error': 'message already liked'});
             }
         },
-        function(messageFound, userFound, done){
+        function(messageFound, userFound, isUserAlreadyLiked, done){
             console.log('Waterfall function number = 5');
             messageFound.update({
                 likes: messageFound.likes + 1,
             })
-            .then(function(messageFound){
-                res.status(201).json(messageFound);   //done(messageFound);
+            .then(function(messageFound) {
+                //res.status(201).json(messageFound);   
+                done(null, messageFound);
             })
             .catch(function(err){
                 console.log(err);
                 res.status(500).json({'error': 'cannot update message like counter'});
             })
         },
-      ],
-      function (messageFound) {
-        console.log('Waterfall function number = final');
-          if(messageFound){
-              return res.status(201).json(messageFound);
-          }else{
-              return res.status(500).json({'error': 'cannot update message'})
-          }
-      }
+        function (messageFound) {
+          console.log('Waterfall function number = final');
+            if(messageFound){
+                return res.status(201).json(messageFound);
+            }else{
+                return res.status(500).json({'error': 'cannot update message'})
+            }
+        }
+      ]
     );
     
   },

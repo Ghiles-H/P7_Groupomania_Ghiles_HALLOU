@@ -1,3 +1,4 @@
+//Import React & MUI
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -13,6 +14,11 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { NavLink } from "react-router-dom";
+
+//Custom import
+import axios from 'axios';
+
+//Components
 
 function Copyright(props) {
   return (
@@ -32,12 +38,35 @@ const theme = createTheme();
 export default function SignUp() {
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const datas = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
     console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+      firstname: datas.get('firstName'),
+      lastName: datas.get('lastName'),
+      email: datas.get('email'),
+      password: datas.get('password'),
     });
+    axios({
+      method: 'post',
+      url: 'http://localhost:8080/api/users/register',
+      data: {
+        firstName: datas.get('firstName'),
+        lastName: datas.get('lastName'),
+        email: datas.get('email'),
+        password: datas.get('password')
+      }
+    }).then(() => console.log("Success !")).catch((e) => {
+      console.error(e);
+      console.log("Fail !")
+    });
+    /* const option = {
+      method: 'POST',
+      body: JSON.stringify(datas),
+      headers: { "Content-Type": "application/json" } 
+    }
+    fetch("http://localhost:8080/api/users/register", option)
+    .then((res) => res.json())
+    .catch((err) => console.log(err)) */
   };
 
   return (

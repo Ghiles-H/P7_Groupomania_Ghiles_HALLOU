@@ -14,8 +14,8 @@ module.exports = {
   register: function (req, res) {
     //Params
     var email = req.body.email;
-    var firstname = req.body.firstname;
-    var lastname = req.body.lastname;
+    var firstname = req.body.firstName;
+    var lastname = req.body.lastName;
     var imgUrl = req.body.imgUrl;
     var password = req.body.password;
 
@@ -31,7 +31,7 @@ module.exports = {
       });
     }
     if (!EMAIL_REGEX.test(email)) {
-      return res.status(400).json({ error: "email is not walid" });
+      return res.status(400).json({ error: "email is not valid" });
     }
     if (!PASS_REGEX.test(password)) {
       return res.status(400).json({

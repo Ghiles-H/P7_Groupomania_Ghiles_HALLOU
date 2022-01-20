@@ -129,7 +129,7 @@ module.exports = {
               where: { id: userId },
             })
               .then(function (userFound) {
-                done(null, messageFound, userFound);
+                done(null, userFound, messageFound);
               })
               .catch(function (err) {
                 console.log(err);
