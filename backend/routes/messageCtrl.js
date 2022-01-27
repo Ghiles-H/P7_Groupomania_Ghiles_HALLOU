@@ -2,6 +2,7 @@
 var models = require("../models");
 const asyncLib = require("async");
 const jwtUtils = require("../utils/jwt.utils");
+const { LocalFireDepartment } = require("@mui/icons-material");
 
 // Constants
 var TITLE_LIMIT = 2;
@@ -90,6 +91,26 @@ module.exports = {
           res.status(500).json({"error": "invalid fields"})
       })
   },
+  getOneMessage: function(req, res){
+    var messageId = parseInt(req.params.messageId);
+    models.Message.findOne({
+      where: { id: messageId },
+    })
+      .then(function (messageFound) {
+        if(messageFound){
+          res.status(200).json(messageFound)
+        }else{
+          res.status(404).json({"error": "no message found"})
+        }
+      })
+      .catch(function (err) {
+          console.log(err);
+        return res
+          .status(500)
+          .json({ error: "unable to verify message" });
+      });
+  
+  },
   deleteMessage: function(req, res){
     console.log('START');
     //Getting auth header
@@ -117,7 +138,7 @@ module.exports = {
             .catch(function (err) {
                 console.log(err);
               return res
-                .status(500)
+                .status(404)
                 .json({ error: "unable to verify message" });
             });
         },
@@ -136,23 +157,37 @@ module.exports = {
                 return res.status(500).json({ error: "unable to verify user" });
               });
           } else {
-            res.status(404).json({ error: "post already liked" });
+            res.status(404).json({ error: "you are not the creator of this post" });
           }
         },
         function(userFound, messageFound, done){
             console.log("userID = ", userFound.id);
             console.log("message.userId Water3 = ", messageFound.UserId);
             if(userFound.id == messageFound.UserId){
-                return res.status(201).json({'nice': "it's good"})
+                //return res.status(201).json({'nice': "it's good"})
+                models.Message.destroy({
+                  where: {id: messageId},
+                })
+                .then(function(msgDeleted){
+                  if(msgDeleted === 1){
+                    return res.status(201).json({"nice": "this post has been deleted"});
+                  }else{
+                    return res.status(500).json({"error": "sorry it's bad :'( (else.then)"})
+                  }
+                })
+                .catch(function(err){
+                  console.log(err);
+                  return res.status(500).json({"error": "sorry it's bad :'( (.catch)"})
+                })
             }else{
-                return res.status(500).json({"error": "sorry it's bad :'( "})
+                return res.status(500).json({"error": "sorry it's bad :'( (if_else)"})
             }
         }
     ],
     function (messageFound) {
         console.log('Waterfall function number = final');
           if(messageFound){
-              return res.status(201).json(messageFound);
+              return res.status(201).json({"nice": "this post has been deleted"});
           }else{
               return res.status(500).json({'error': 'cannot update message'})
           }

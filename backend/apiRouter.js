@@ -18,11 +18,13 @@ exports.router = (function () {
   //Messages routes
   apiRouter.route("/messages/create/").post(messageCtrl.createMessage);
   apiRouter.route("/messages/").get(messageCtrl.listMessage);
-  apiRouter.route("/messages/delete/:messageId").get(messageCtrl.deleteMessage);
+  apiRouter.route("/messages/:messageId").get(messageCtrl.getOneMessage);
+  apiRouter.route("/messages/delete/:messageId").delete(messageCtrl.deleteMessage);
   //apiRouter.route("message/answer").post(messageCtrl.answerMessage);
 
   //Likes routes
   apiRouter.route("/messages/vote/like/:messageId").post(likesCtrl.likePost);
+  apiRouter.route("/messages/vote/unlike/:messageId").post(likesCtrl.unlikePost);
 
 
   return apiRouter;

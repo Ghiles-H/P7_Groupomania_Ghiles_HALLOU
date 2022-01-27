@@ -1,4 +1,9 @@
+//Import React
 import * as React from 'react';
+import { NavLink } from "react-router-dom";
+import { useState, useEffect } from 'react';
+
+//Import MUI
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,8 +17,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { NavLink } from "react-router-dom";
 
+//Custom import
+import axios from "axios";
+
+//Components
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -30,83 +38,115 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
+  const [toggleState, setToggleState] = useState(false);
+  
+  const toggleFct = () => {
+    console.log("(Pre-change)Login= ", toggleState);
+    setToggleState(!toggleState);
+    console.log("(Post-change)Login= ", toggleState);
+  }
+  
+  useEffect(() => {
+
+  })
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const datas = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
     console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+      email: datas.get('email'),
+      password: datas.get('password'),
     });
-  };
+    axios({
+      method: "post",
+      url: "http://localhost:8080/api/users/login",
+      data: {
+        email: datas.get("email"),
+        password: datas.get("password"),
+      },
+    })
+      .then((response) => {
+        console.log(response.data)
+        console.log("Success !");
+        toggleFct();
+      })
+      .catch((e) => {
+        console.error(e);
+        console.log("Fail !");
+      });
 
-  return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" className="checkboxRemember"/>}
-              label="Remember me"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <NavLink exact to={"/signup"} variant="body2" className="forgotLink">
-                  Forgot password?
-                </NavLink>
+  };
+  
+    return (
+      <ThemeProvider theme={theme}>
+        <Container component="main" maxWidth="xs">
+          <CssBaseline />
+          <Box
+            sx={{
+              marginTop: 8,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" className="checkboxRemember"/>}
+                label="Remember me"
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+              <Grid container>
+                <Grid item xs>
+                  <NavLink exact to={"/signup"} variant="body2" className="forgotLink">
+                    Forgot password?
+                  </NavLink>
+                </Grid>
+                <Grid item>
+                  <NavLink exact to={"/signup"} variant="body2" className="signUpLink">
+                    {"Don't have an account? Sign Up"}
+                  </NavLink>
+                </Grid>
               </Grid>
-              <Grid item>
-                <NavLink exact to={"/signup"} variant="body2" className="signUpLink">
-                  {"Don't have an account? Sign Up"}
-                </NavLink>
-              </Grid>
-            </Grid>
+            </Box>
           </Box>
-        </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
-    </ThemeProvider>
-  );
+          <Copyright sx={{ mt: 8, mb: 4 }} />
+        </Container>
+      </ThemeProvider>
+    );
+  
+  
 }

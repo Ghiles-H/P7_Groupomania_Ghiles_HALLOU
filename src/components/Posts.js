@@ -31,13 +31,14 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function RecipeReviewCard() {
+export default function RecipeReviewCard(props) {
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-  
+  let postData = props;
+  console.log("CC", postData.props.title);
   return (
     <Card sx={{ maxWidth: 700 }} id="postCard">
       <CardHeader
@@ -51,8 +52,8 @@ export default function RecipeReviewCard() {
             <MoreVertIcon />
           </IconButton>
         }
-        title = "RecipeReviewCard Title"
-        subheader="September 14, 2016"
+        title = {postData.props.title}
+        subheader={postData.props.createdAt}
       />
       <CardMedia
         component="img"
@@ -62,9 +63,7 @@ export default function RecipeReviewCard() {
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary" id="CardText">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the
-          mussels, if you like.
+          {postData.props.content}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
