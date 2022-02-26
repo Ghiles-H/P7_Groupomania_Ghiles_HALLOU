@@ -24,5 +24,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # note and testFiles
-/backend/routes/usersCtrl_copyTest.js
 note.txt

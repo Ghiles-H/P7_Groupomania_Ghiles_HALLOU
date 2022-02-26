@@ -35,17 +35,17 @@ module.exports = {
         allowNull: false,
         type: Sequelize.BOOLEAN
       },
-      city: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      job: {
-        allowNull: true,
-        type: Sequelize.STRING
+      isActive: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN
       },
       imgUrl: {
         allowNull: true,
         type: Sequelize.STRING
+      },
+      isModerator: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,

@@ -4,10 +4,16 @@ const jwtUtils = require("../utils/jwt.utils");
 const models = require("../models");
 const asyncLib = require("async");
 
+const fs = require("fs");
+const { promisify } = require("util");
+const pipeline = promisify(require("stream").pipeline);
+
 //Constants
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 const PASS_REGEX = /^(?=.*\d).{4,8}$/;
+const maxAge = 12 * 60 * 60 * 1000; // maxAge = 12h
+const maxAge4 = 10000;
 
 //Routes
 module.exports = {
@@ -147,11 +153,14 @@ module.exports = {
       function (userFound) {
         //Fct primaire du waterfall
         if (userFound) {
+          const jwToken = jwtUtils.generateTokenForUser(userFound);
+          res.cookie("cookieToken", jwToken, { httpOnly: true, maxAge });
+          res.header("authorization", jwToken);
           return res.status(201).json({
             userId: userFound.id,
             userFirstName: userFound.firstname,
             userLastName: userFound.lastname,
-            token: jwtUtils.generateTokenForUser(userFound),
+            token: jwToken,
           });
         } else {
           return res.status(500).json({ error: "cannot log on user" });
@@ -159,16 +168,39 @@ module.exports = {
       }
     );
   },
+  getAllUsers: function (req, res) {
+    models.User.findAll({
+      attributes: ["id", "email", "firstname", "lastname", "bio", "imgUrl"],
+    })
+      .then((data) => {
+        return res.status(201).json(data);
+      })
+      .catch((err) => console.log(err));
+  },
   getUserProfile: function (req, res) {
     //Getting auth header
-    var headerAuth = req.headers["authorization"];
-    var userId = jwtUtils.getUserId(headerAuth);
+    const cookieAuth = null; //req.cookies.cookieToken;
+    const headerAuth = req.headers["authorization"];
+    let token = null;
+    if (cookieAuth) {
+      token = cookieAuth;
+    } else {
+      token = headerAuth;
+      console.log("header=", headerAuth);
+    }
+    let userId = -1;
+    userId = jwtUtils.getUserId(token);
 
     if (userId < 0) {
-      console.log("USER ID ", userId);
-      console.log("HEADERAUTH ", req.headers["authorization"]);
-      return res.status(401).json({ error: "wrong token" });
+      console.log("ERREUR");
+      console.log("USER ID ", userId); // if(userId = -1) => cookie+header = null; if(userId = -2) => pb cookie; if(userId = -3) => pb header
+
+      console.log("END");
+      return res.status(401).json({ error: "wrong token." });
     } else {
+      console.log("SUCCESS");
+      console.log("USER ID ", userId);
+
       models.User.findOne({
         attributes: [
           "id",
@@ -192,11 +224,48 @@ module.exports = {
           res.status(500).json({ error: "cannot fetch user" });
         });
     }
+    console.log("END");
+  },
+  getUserInfo: function (req, res) {
+    const userId = req.params.id;
+    models.User.findOne({
+      attributes: [
+        "id",
+        "email",
+        "firstname",
+        "lastname",
+        "imgUrl",
+        "bio",
+        "isModerator",
+        "createdAt",
+      ],
+      where: { id: userId },
+    })
+      .then(function (user) {
+        if (user) {
+          return res.status(201).json(user);
+        } else {
+          res.status(404).json({ error: "user not found" });
+        }
+      })
+      .catch(function (err) {
+        res.status(500).json({ error: "cannot fetch user" });
+      });
   },
   updateUserProfile: function (req, res) {
     //Getting auth header
-    var headerAuth = req.headers["authorization"];
-    var userId = jwtUtils.getUserId(headerAuth);
+    const cookieAuth = req.cookies.cookieToken;
+    var userIdCookie = jwtUtils.getUserId(cookieAuth);
+    var userIdParams = req.params.id;
+    let userId;
+
+    console.log("cookie", cookieAuth);
+    console.log("params", userIdParams);
+    if (userIdParams) {
+      userId = userIdParams;
+    } else {
+      return res.status(403).json({ error: "unable to verify user" });
+    }
 
     //Params
     var firstname = req.body.firstname;
@@ -204,12 +273,21 @@ module.exports = {
     var bio = req.body.bio;
     var city = req.body.city;
     var job = req.body.job;
+    var imgUrl = req.body.imgUrl;
 
     asyncLib.waterfall(
       [
         function (done) {
           models.User.findOne({
-            attributes: ["id", "firstname", "lastname", "bio", "city", "job"],
+            attributes: [
+              "id",
+              "firstname",
+              "lastname",
+              "bio",
+              "city",
+              "job",
+              "imgUrl",
+            ],
             where: { id: userId },
           })
             .then(function (userFound) {
@@ -228,6 +306,7 @@ module.exports = {
                 job: job ? job : userFound.job,
                 firstname: firstname ? firstname : userFound.firstname,
                 lastname: lastname ? lastname : userFound.lastname,
+                imgUrl: imgUrl ? imgUrl : userFound.imgUrl,
               })
               .then(function () {
                 done(userFound);
@@ -249,6 +328,65 @@ module.exports = {
       }
     );
   },
+  updateImgProfil: async function (req, res) {
+    var userId = req.params.id;
+    
+    try {
+      asyncLib.waterfall(
+        [
+          function (done) {
+            models.User.findOne({
+              attributes: [
+                "id",
+                "imgUrl"
+              ],
+              where: { id: userId },
+            })
+              .then(function (userFound) {
+                console.log("imgUrl=", userFound.imgUrl);
+                done(null, userFound);
+              })
+              .catch(function (err) {
+                console.log("err findOne", err);
+                return res.status(500).json({ error: "unable to verify user" });
+              });
+          },
+          function (userFound, done) {
+            if (userFound) {
+              console.log("REQFILE",req.file)
+              const reqFilePath = req.file.path
+              userFound
+                .update({
+                  imgUrl: reqFilePath.replace(`./public`, ''),
+                })
+                .then(function () {
+                  done(userFound);
+                })
+                .catch(function (err) {
+                  console.log("err update", err);
+                  return res.status(500).json({ error: "cannot update user" });
+                });
+            } else {
+              return res.status(404).json({ error: "user not found" });
+            }
+          },
+        ],
+        function (userFound) {
+          if (userFound) {
+            return res.status(201).json(userFound);
+          } else {
+            return res
+              .status(500)
+              .json({ error: "cannot update user profile" });
+          }
+        }
+      );
+    } catch (err) {
+      console.log("err userfound", err);
+      return res.status(300).send({ message: err });
+    }
+  },
+
   deleteUser: function (req, res) {
     //Getting auth header
     var headerAuth = req.headers["authorization"];
@@ -273,5 +411,9 @@ module.exports = {
           res.status(500).json({ error: "cannot fetch user" });
         });
     }
+  },
+  logout: function (req, res) {
+    res.cookie("cookieToken", "", { httpOnly: true, maxAge: 1 });
+    return res.status(200).json("Logout Success");
   },
 };

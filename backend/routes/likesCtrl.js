@@ -9,14 +9,16 @@ let userLikedNow;
 //Routes
 module.exports = {
   likePost: function (req, res) {
-    console.log("START");
     //Getting auth header
-    var headerAuth = req.headers["authorization"];
-    var userId = jwtUtils.getUserId(headerAuth);
+    var cookieAuth = req.cookies.cookieToken;
+    var CookieUserId = jwtUtils.getUserId(cookieAuth);
+    var BodyUserId = req.body.id;
+    var userId = BodyUserId;
+    
+   
 
     //Params
     var messageId = parseInt(req.params.messageId);
-    console.log("messageID= ", messageId);
 
     if (messageId <= 0) {
       return res.status(400).json({ error: "invalid parameters" });
@@ -32,7 +34,6 @@ module.exports = {
             done(null, messageFound);
           })
           .catch(function (err) {
-            console.log(err);
             return res.status(500).json({ error: "unable to verify message" });
           });
       },
@@ -46,7 +47,6 @@ module.exports = {
               done(null, messageFound, userFound);
             })
             .catch(function (err) {
-              console.log(err);
               return res.status(500).json({ error: "unable to verify user" });
             });
         } else {
@@ -58,15 +58,14 @@ module.exports = {
         if (userFound) {
           models.Like.findOne({
             where: {
-              userId: userId,
-              messageId: messageId,
+              userId: userFound.id,
+              messageId: messageFound.id,
             },
           })
             .then(function (isUserAlreadyLiked) {
               done(null, messageFound, userFound, isUserAlreadyLiked);
             })
             .catch(function (err) {
-              console.log(err);
               return res
                 .status(500)
                 .json({ error: "unable to verify is user already liked" });
@@ -77,7 +76,6 @@ module.exports = {
       },
       function (messageFound, userFound, isUserAlreadyLiked, done) {
         console.log("Waterfall function number = 4");
-
         if (!isUserAlreadyLiked) {
           messageFound
             .addUser(userFound)
@@ -85,7 +83,6 @@ module.exports = {
               done(null, messageFound, userFound, isUserAlreadyLiked);
             })
             .catch(function (err) {
-              console.log(err);
               return res.status(500).json({ error: "unable to set reaction" });
             });
         } else {
@@ -99,11 +96,9 @@ module.exports = {
             likes: messageFound.likes + 1,
           })
           .then(function (messageFound) {
-            //res.status(201).json(messageFound);
             done(null, messageFound);
           })
           .catch(function (err) {
-            console.log(err);
             res
               .status(500)
               .json({ error: "cannot update message like counter" });
@@ -123,11 +118,12 @@ module.exports = {
     console.log("START");
     //Getting auth header
     var headerAuth = req.headers["authorization"];
-    var userId = jwtUtils.getUserId(headerAuth);
+    var headerUserId = jwtUtils.getUserId(headerAuth);
+    var BodyUserId = req.body.id;
+    var userId = BodyUserId
 
     //Params
     var messageId = parseInt(req.params.messageId);
-    console.log("messageID= ", messageId);
 
     if (messageId <= 0) {
       return res.status(400).json({ error: "invalid parameters" });
@@ -143,7 +139,6 @@ module.exports = {
             done(null, messageFound);
           })
           .catch(function (err) {
-            console.log(err);
             return res.status(500).json({ error: "unable to verify message" });
           });
       },
@@ -157,7 +152,6 @@ module.exports = {
               done(null, messageFound, userFound);
             })
             .catch(function (err) {
-              console.log(err);
               return res.status(500).json({ error: "unable to verify user" });
             });
         } else {
@@ -177,7 +171,6 @@ module.exports = {
               done(null, messageFound, userFound, isUserAlreadyLiked);
             })
             .catch(function (err) {
-              console.log(err);
               return res
                 .status(500)
                 .json({ error: "unable to verify is user already liked" });
@@ -196,7 +189,6 @@ module.exports = {
               done(null, messageFound, userFound, isUserAlreadyLiked);
             })
             .catch(function (err) {
-              console.log(err);
               return res.status(500).json({ error: "unable to set reaction" });
             });
         } else {

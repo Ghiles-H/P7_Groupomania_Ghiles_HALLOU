@@ -2,7 +2,6 @@
 var models = require("../models");
 const asyncLib = require("async");
 const jwtUtils = require("../utils/jwt.utils");
-const { LocalFireDepartment } = require("@mui/icons-material");
 
 // Constants
 var TITLE_LIMIT = 2;
@@ -11,20 +10,31 @@ var CONTENT_LIMIT = 4;
 module.exports = {
   createMessage: function (req, res) {
     //Getting auth header
-    var headerAuth = req.headers["authorization"];
-    var userId = jwtUtils.getUserId(headerAuth);
+    //var headerAuth = req.headers["authorization"];
+    //var idUser = jwtUtils.getUserId(headerAuth);
 
     //Params
-    var title = req.body.title;
+    let userId = req.body.userId;
+    var title = "Post-de-user-"+userId;
     var content = req.body.content;
-
-    if (title == null || content == null) {
-      return res.status(400).json({ error: "missing parameters" });
+    var attachment;
+    
+    if(req.file == undefined || req.file == null){
+      if(req.body.imgURL == null || req.body.imgURL == undefined){
+        attachment = null
+      }else{
+        attachment = req.body.imgURL
+      }
+    }else{
+      attachment = req.file.path.replace('./public', '');
     }
-    if (title.length <= TITLE_LIMIT || content.length <= CONTENT_LIMIT) {
+
+    if (content == null) {
+      content = ' ';
+    }
+    if (title.length <= TITLE_LIMIT) {
       return res.status(400).json({ error: "invalid parameters" });
     }
-
     asyncLib.waterfall([
         
         function(done){
@@ -45,7 +55,9 @@ module.exports = {
                 models.Message.create({
                     title: title,
                     content: content,
+                    attachment: attachment,
                     likes: 0,
+                    comments: 0,
                     UserId: userFound.id 
                 })
                 .then(function(newMessage){
@@ -76,7 +88,7 @@ module.exports = {
           offset: (!isNaN(offset)) ? offset : null,
           include:[{
               model: models.User,
-              attributes: ['firstname', 'lastname']
+              attributes: ['id', 'firstname', 'lastname', 'bio']
           }]
       })
       .then(function(messages){
@@ -87,7 +99,6 @@ module.exports = {
         }
       })
       .catch(function(err){
-          console.log(err);
           res.status(500).json({"error": "invalid fields"})
       })
   },
@@ -104,7 +115,6 @@ module.exports = {
         }
       })
       .catch(function (err) {
-          console.log(err);
         return res
           .status(500)
           .json({ error: "unable to verify message" });
@@ -112,14 +122,12 @@ module.exports = {
   
   },
   deleteMessage: function(req, res){
-    console.log('START');
     //Getting auth header
     var headerAuth = req.headers["authorization"];
-    var userId = jwtUtils.getUserId(headerAuth);
-
+    //var userId = jwtUtils.getUserId(headerAuth);
+    var userId = req.body.userId;
     //Params
     var messageId = parseInt(req.params.messageId);
-    console.log('messageID= ', messageId);
 
     if (messageId <= 0) { 
       return res.status(400).json({ error: "invalid parameters" });
@@ -132,7 +140,6 @@ module.exports = {
             where: { id: messageId },
           })
             .then(function (messageFound) {
-                console.log("messageUserId Water1= ",messageFound.UserId);
               done(null, messageFound);
             })
             .catch(function (err) {
@@ -145,7 +152,6 @@ module.exports = {
         function (messageFound, done) {
             console.log('Waterfall function number = 2');
           if (messageFound) {
-            console.log("messageUserId Water2= ",messageFound.UserId);
             models.User.findOne({
               where: { id: userId },
             })
@@ -160,11 +166,15 @@ module.exports = {
             res.status(404).json({ error: "you are not the creator of this post" });
           }
         },
-        function(userFound, messageFound, done){
+        async function(userFound, messageFound, done){
             console.log("userID = ", userFound.id);
-            console.log("message.userId Water3 = ", messageFound.UserId);
-            if(userFound.id == messageFound.UserId){
-                //return res.status(201).json({'nice': "it's good"})
+            if(userFound.id == messageFound.UserId || userFound.isModerator == 1){
+                await models.Like.destroy({
+                  where: {messageId}
+                })
+                await models.Comment.destroy({
+                  where: {messageId}
+                })
                 models.Message.destroy({
                   where: {id: messageId},
                 })
@@ -186,11 +196,6 @@ module.exports = {
     ],
     function (messageFound) {
         console.log('Waterfall function number = final');
-          if(messageFound){
-              return res.status(201).json({"nice": "this post has been deleted"});
-          }else{
-              return res.status(500).json({'error': 'cannot update message'})
-          }
       })
   }
 };

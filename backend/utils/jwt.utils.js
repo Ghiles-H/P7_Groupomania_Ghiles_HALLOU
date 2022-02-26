@@ -11,16 +11,18 @@ module.exports = {
       },
       JWT_SIGN_SECRET,
       {
-        expiresIn: "1h",
+        expiresIn: "12h",
       }
     );
   },
-  parseAuthorization: function(authorization){
-    return (authorization != null) ? authorization.replace('Bearer ', '') : null;
+  parseAutho: function (autho){
+    console.log("autho", autho)
+    return (autho != null && autho.includes('Bearer ')) ? autho.replace('Bearer ', '') : autho ;
   },
-  getUserId: function(authorization){
+  getUserId: function(userToken){
     var userId = -2;
-    var token = module.exports.parseAuthorization(authorization);
+    var token = module.exports.parseAutho(userToken);
+    console.log(userToken);
     if(token != null){
       try{
         var jwtToken = jwt.verify(token, JWT_SIGN_SECRET);
@@ -28,7 +30,23 @@ module.exports = {
           userId = jwtToken.userId;
         }
       }catch(err){
-
+        console.log(err);
+      }
+    }
+    return userId;
+  },
+  getUserIdHeader: function(HeaderToken){
+    var userId = -3;
+    var token = module.exports.parseAutho(HeaderToken);
+    if(token != null){
+      try{
+        var jwtToken = jwt.verify(token, JWT_SIGN_SECRET);
+        if(jwtToken != null){
+          userId = jwtToken.userId;
+          
+        }
+      }catch(err){
+        console.log(err);
       }
     }
     return userId;
