@@ -5,11 +5,7 @@ const iPad = puppeteer.devices["iPad Pro 11"];
 module.exports = {
   scrapGag: async function (req, res) {
     const urlGagId = req.params.gagLink;
-    const urlGag = `https://9gag.com/gag/${urlGagId}`
-    console.log("url=", urlGag);
-    console.log("urlId=", urlGagId);
-    const urlGagTest = "https://9gag.com/gag/aE8qLK9";
-    console.log(urlGag);
+    const urlGag = `https://9gag.com/gag/${urlGagId}`;
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     console.log('Browser ok');
@@ -20,12 +16,16 @@ module.exports = {
     await delay(3500);
 
     const attachementSrc = await page.evaluate(() => {
-      //let buttonCookies = document.querySelector(".css-1k47zha");
-      //buttonCookies.click();
-      let myImg = document.querySelector("div.image-post picture img")?.src;
-      imgSrc = myImg;
-      return myImg;
+      let myImg = document.querySelector("div.post-container > div > a > div.post-view > picture > img")?.src;
+      let myGif = document.querySelectorAll("div.post-container > div > a > div.post-view > video > source")[1]?.src;
+      
+      if(myImg){
+        return myImg;
+      }else{
+        return myGif;
+      }
     });
+    
     console.log('imgSrc ok');
     
     await browser.close();
