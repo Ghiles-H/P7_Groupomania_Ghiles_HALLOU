@@ -25,7 +25,12 @@ const NewPostForm = () => {
       const data = new FormData();
       data.append("content", message);
       data.append("userId", userData.id);
-      if (gagImg !== null) data.append("imgURL", gagImg);
+      const msg = message.split(" ");
+      for (let i = 0; i < msg.length; i++){
+        if (msg[i].includes("(Source:_9Gag.com)")){
+          data.append("imgURL", localStorage.getItem("gagUrlImg"))
+        }
+      }
       if (file) data.append("image", file);
 
       await dispatch(addPost(data));
@@ -36,52 +41,44 @@ const NewPostForm = () => {
     }
   };
 
-
   const handleMessage = async (e) => {
-    const gagImgEx = "_700bwp.webp";
-    const gagGifEx = ["_460svav1.mp4", "_460svh265.mp4"];
-
     let findLink = e.target.value.split(" ");
     console.log("FL", findLink);
     for (let i = 0; i < findLink.length; i++) {
       if (findLink[i].includes("https://9gag.com")) {
-
-
-
-        let gagLinkId = findLink[i].split("/")[4];
-        let gagLinkImg = await addGag(gagLinkId);
-        await console.log(gagLinkImg);
-        setGagImg(gagLinkImg);
-        setPostPicture(gagLinkImg);
-
-        /* if (window.confirm("C'est une image ou un gif/video ?")) {
-          let gagLinkImg =
-            "https://img-9gag-fun.9cache.com/photo/" + gagLink[4] + gagImgEx;
-          console.log(gagLinkImg);
-          setGagImg(gagLinkImg);
-          setPostPicture(gagLinkImg);
-        } else {
-          let i = 0;
-          while (videoOk !== true) {
-            let gagLinkImg =
-              "https://img-9gag-fun.9cache.com/photo/" +
-              gagLink[4] +
-              gagGifEx[i];
-            setGagImg(gagLinkImg);
-            setVideo(gagLinkImg);
-            if (window.confirm("Votre video/gif s'affiche correctement ?")) {
-            videoOk = true;
+        const gagId = findLink[i].split("/")[4];
+        axiosTest(gagId)
+          .then((data) => {
+            localStorage.setItem("gagUrlImg", data);
+            if(data.includes('.webm')|| data.includes('.mp4')){
+              return setVideo(data)
             }else{
-              i++;
+              return setPostPicture(data);
             }
-          }
-          
-        } */
+          })
+          .catch((err) => console.log(err));
         findLink.splice(i, 1);
-        findLink.push(" (Source: 9Gag.com)");
+        findLink.push(" (Source:_9Gag.com)");
       }
     }
+    let testImg = localStorage.getItem("gagUrlImg");
     setMessage(findLink.join(" "));
+    await console.log("img=", testImg);
+  };
+  const axiosTest = (id) => {
+    const promise = axios.get("http://localhost:8080/puppeteer/" + id);
+
+    const dataPromise = promise.then((res) => res.data);
+
+    return dataPromise;
+  };
+  const handleMessageT = (e) => {
+    setMessage(e.target.value);
+    axiosTest()
+      .then((data) => {
+        setPostPicture(data);
+      })
+      .catch((err) => console.log(err));
   };
 
   const handlePicture = (e) => {
@@ -96,6 +93,7 @@ const NewPostForm = () => {
     setVideo("");
     setGagImg("");
     setFile("");
+    localStorage.clear();
   };
   useEffect(() => {
     if (!isEmpty(userData)) setIsLoading(false);

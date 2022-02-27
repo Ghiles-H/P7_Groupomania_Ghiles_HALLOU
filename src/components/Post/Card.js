@@ -46,7 +46,7 @@ const Card = ({ post }) => {
             <div className="card-header">
               <div className="pseudo">
                 <h3>
-                  {!isEmpty(usersData[0]) &&  // eslint-disable-next-line
+                  {!isEmpty(usersData[0]) && // eslint-disable-next-line
                     usersData.map((user) => {
                       if (user.id === post.UserId)
                         return user.firstname + " " + user.lastname;
@@ -57,17 +57,31 @@ const Card = ({ post }) => {
               <span>{dateParcer(post.createdAt) + " id= " + post.id}</span>
             </div>
             <p>{post.content}</p> {/* post.content */}
-            
-            {post.attachment ? (post.attachment.includes(".webp") || post.attachment.includes(".png") || post.attachment.includes(".jpg") || post.attachment.includes(".jpeg") ? (
-              <img src={post.attachment} alt="card-pic" className="card-pic" />
-              ) : (<video src={post.attachment} alt="card-gif" className="card-pic" />)) : null}
-              
-            {// eslint-disable-next-line
-            (userData.id === post.UserId || userData.isModerator == true) && (
-              <div className="button-container">
-                <DeleteCard id={post.id} props={post} />
-              </div>
-            )}
+            {post.attachment ? (
+              post.attachment.includes(".png") ||
+              post.attachment.includes(".jpg") ||
+              post.attachment.includes(".jpeg") ? (
+                <img
+                  src={post.attachment}
+                  alt="card-pic"
+                  className="card-pic"
+                />
+              ) : post.attachment.includes(".webp")||post.attachment.includes(".mp4") || post.attachment.includes(".webm") ? (
+                <video
+                  src={post.attachment}
+                  alt="card-gif"
+                  className="card-pic"
+                />
+              ) : null
+            ) : null}
+            {
+              // eslint-disable-next-line
+              (userData.id === post.UserId || userData.isModerator == true) && (
+                <div className="button-container">
+                  <DeleteCard id={post.id} props={post} />
+                </div>
+              )
+            }
             <div className="card-footer">
               <div className="comment-icon">
                 <img
@@ -84,7 +98,7 @@ const Card = ({ post }) => {
               <LikeButtom post={post} />
               <img src="./img/icons/share.svg" alt="share-icon" />
             </div>
-            {showComments && <CardComment post={post}/>}
+            {showComments && <CardComment post={post} />}
           </div>
         </>
       )}
