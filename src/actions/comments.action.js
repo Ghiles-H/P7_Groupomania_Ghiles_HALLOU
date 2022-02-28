@@ -22,7 +22,7 @@ export const getComments = () => {
   let tableau;
   return (dispatch) => {
     return axios
-      .get(`${url_api}/api/comments/`)
+      .get(`${url_api}/api/comments/`, {withCredentials: true})
       .then((res) => {
         tableau = res.data;
         sortTab(tableau);
@@ -39,6 +39,7 @@ export const addComment = (postId, data) => {
       method: "post",
       url: `${url_api}/api/comments/create/${postId}`,
       data: data,
+      withCredentials: true 
     })
       .then((res) => dispatch({ type: GET_POST_ERRORS, payload: "" }))
       .catch((err) => console.log(err));

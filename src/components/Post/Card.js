@@ -54,7 +54,7 @@ const Card = ({ post }) => {
                   {/* {isEmpty(usersData[0]) && "NameUserPoster"} */}
                 </h3>
               </div>
-              <span>{dateParcer(post.createdAt) + " id= " + post.id}</span>
+              <span>{dateParcer(post.createdAt)}</span>
             </div>
             <p>{post.content}</p> {/* post.content */}
             {post.attachment ? (

@@ -9,13 +9,9 @@ var CONTENT_LIMIT = 4;
 // Routes
 module.exports = {
   createMessage: function (req, res) {
-    //Getting auth header
-    //var headerAuth = req.headers["authorization"];
-    //var idUser = jwtUtils.getUserId(headerAuth);
-
+    let userId = jwtUtils.getUserId(req.cookies.cookieToken);
     //Params
-    let userId = req.body.userId;
-    var title = "Post-de-user-"+userId;
+    var title = "Post-du-user-"+userId;
     var content = req.body.content;
     var attachment;
     
@@ -122,10 +118,7 @@ module.exports = {
   
   },
   deleteMessage: function(req, res){
-    //Getting auth header
-    var headerAuth = req.headers["authorization"];
-    //var userId = jwtUtils.getUserId(headerAuth);
-    var userId = req.body.userId;
+    let userId = jwtUtils.getUserId(req.cookies.cookieToken);
     //Params
     var messageId = parseInt(req.params.messageId);
 
