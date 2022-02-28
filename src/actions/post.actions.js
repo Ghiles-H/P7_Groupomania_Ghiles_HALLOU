@@ -25,7 +25,7 @@ export const getPosts = (num) => {
   let tableau;
   return (dispatch) => {
     return axios
-      .get(`${url_api}/api/messages/`)
+      .get(`${url_api}/api/messages/`, {withCredentials: true})
       .then((res) => {
         tableau = res.data;
         sortTab(tableau);
@@ -40,7 +40,7 @@ export const getPosts = (num) => {
 export const addPost = (data) => {
   return (dispatch) => {
     return axios
-      .post(`${url_api}/api/messages/create/`, data)
+      .post(`${url_api}/api/messages/create/`, data, {withCredentials: true})
       .then((res) => dispatch({ type: GET_POST_ERRORS, payload: "" }))
       .catch((err) => console.log(err));
   };
@@ -49,7 +49,7 @@ export const addPost = (data) => {
 export const addGag = (imgLink) => {
   let imgGagLink;
   const axi = axios
-    .get(`${url_api}/puppeteer/${imgLink}`)
+    .get(`${url_api}/puppeteer/${imgLink}`, {withCredentials: true})
     .then((res) => {
       imgGagLink = res.data;
       console.log(imgGagLink);
@@ -66,6 +66,7 @@ export const likePost = (messageId, userId) => {
       method: "post",
       url: `${url_api}/api/messages/vote/like/` + messageId,
       data: { id: userId },
+      withCredentials: true
     })
       .then((res) => {
         dispatch({ type: LIKE_POST, payload: { messageId, userId } });
@@ -79,6 +80,7 @@ export const unlikePost = (messageId, userId) => {
       method: "post",
       url: `${url_api}/api/messages/vote/unlike/` + messageId,
       data: { id: userId },
+      withCredentials: true
     })
       .then((res) =>
         dispatch({ type: UNLIKE_POST, payload: { messageId, userId } })
@@ -95,6 +97,7 @@ export const deletePost = (messageId, userId) => {
       method: "delete",
       url: `${url_api}/api/messages/delete/${messageId}`,
       data: { userId },
+      withCredentials: true
     }).then((res) => {
       dispatch({ type: DELETE_POST, payload: { messageId } });
     });

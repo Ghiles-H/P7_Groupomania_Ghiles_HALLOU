@@ -1,5 +1,6 @@
 //Imports
 
+const {checkUser, requireAuth} = require("./middlewares/userAuth.middleware")
 var express = require("express");
 
 var usersCtrl = require("./routes/usersCtrl");
@@ -9,7 +10,7 @@ var multer = require("./middlewares/multerConfig");
 const commentsCtrl = require("./routes/commentsCtrl");
 const uploadProfil = require("./middlewares/multerConfig");
 const uploadPost = require("./middlewares/multerConfig_2");
-//upload.single('profil_image'),
+
 //Router
 exports.router = (function () {
   var apiRouter = express.Router();
@@ -28,7 +29,7 @@ exports.router = (function () {
 
   apiRouter.route("/users/updateprofil/:id").put(usersCtrl.updateUserProfile);
 
-  apiRouter.route("/users/deleteprofile/").delete(usersCtrl.deleteUser);
+  apiRouter.route("/users/deleteprofil/:id").delete(usersCtrl.deleteUser);
 
   //Messages routes
   apiRouter.route("/messages/create/").post(uploadPost.single('image'), messageCtrl.createMessage);

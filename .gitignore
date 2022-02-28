@@ -25,3 +25,7 @@ yarn-error.log*
 
 # note and testFiles
 note.txt
+
+# uploads files
+public/uploads
+

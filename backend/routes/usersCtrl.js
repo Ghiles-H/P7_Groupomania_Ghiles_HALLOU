@@ -179,7 +179,7 @@ module.exports = {
   },
   getUserProfile: function (req, res) {
     //Getting auth header
-    const cookieAuth = null; //req.cookies.cookieToken;
+    const cookieAuth = req.cookies.cookieToken;
     const headerAuth = req.headers["authorization"];
     let token = null;
     if (cookieAuth) {
@@ -227,7 +227,9 @@ module.exports = {
     console.log("END");
   },
   getUserInfo: function (req, res) {
-    const userId = req.params.id;
+    const cookieAuth = req.cookies.cookieToken;
+    const userId = jwtUtils.getUserId(cookieAuth);
+    //const userId = req.params.id;
     models.User.findOne({
       attributes: [
         "id",
@@ -261,8 +263,8 @@ module.exports = {
 
     console.log("cookie", cookieAuth);
     console.log("params", userIdParams);
-    if (userIdParams) {
-      userId = userIdParams;
+    if (userIdCookie) {
+      userId = userIdCookie;
     } else {
       return res.status(403).json({ error: "unable to verify user" });
     }
@@ -284,8 +286,6 @@ module.exports = {
               "firstname",
               "lastname",
               "bio",
-              "city",
-              "job",
               "imgUrl",
             ],
             where: { id: userId },
@@ -329,17 +329,13 @@ module.exports = {
     );
   },
   updateImgProfil: async function (req, res) {
-    var userId = req.params.id;
-    
+    let userId = jwtUtils.getUserId(req.cookies.cookieToken);
     try {
       asyncLib.waterfall(
         [
           function (done) {
             models.User.findOne({
-              attributes: [
-                "id",
-                "imgUrl"
-              ],
+              attributes: ["id", "imgUrl"],
               where: { id: userId },
             })
               .then(function (userFound) {
@@ -353,11 +349,11 @@ module.exports = {
           },
           function (userFound, done) {
             if (userFound) {
-              console.log("REQFILE",req.file)
-              const reqFilePath = req.file.path
+              console.log("REQFILE", req.file);
+              const reqFilePath = req.file.path;
               userFound
                 .update({
-                  imgUrl: reqFilePath.replace(`./public`, ''),
+                  imgUrl: reqFilePath.replace(`./public`, ""),
                 })
                 .then(function () {
                   done(userFound);
@@ -387,16 +383,54 @@ module.exports = {
     }
   },
 
-  deleteUser: function (req, res) {
-    //Getting auth header
-    var headerAuth = req.headers["authorization"];
-    var userId = jwtUtils.getUserId(headerAuth);
-
+  deleteUser: async function (req, res) {
+    let userId = jwtUtils.getUserId(req.cookies.cookieToken);
     if (userId < 0) {
-      console.log("USER ID ", userId);
-      console.log("HEADERAUTH ", req.headers["authorization"]);
       return res.status(400).json({ error: "wrong token" });
     } else {
+      //Delete Likes
+      await models.Like.findAll({
+        attributes: ["messageId"],
+        where: { userId },
+      })
+      .then((res) => {
+        for (let i = 0; i < res.length; i++) {
+          models.Message.findOne({
+            where: res[i].dataValues.messageId,
+          }).then(function (msgFound) {
+            msgFound.update({
+              likes: msgFound.likes - 1,
+            });
+          });
+        }
+      });
+      await models.Like.destroy({
+        where: { userId },
+      });
+
+      //Delete Comments
+      await models.Comment.findAll({
+        attributes: ["messageId"],
+        where: { userId },
+      }).then((res) => {
+        for (let i = 0; i < res.length; i++) {
+          models.Message.findOne({
+            where: res[i].dataValues.messageId,
+          }).then(function (msgFound) {
+            msgFound.update({
+              comments: msgFound.comments - 1,
+            });
+          });
+        }
+      });
+      await models.Comment.destroy({
+        where: { userId },
+      });
+      //Delete Messages
+      await models.Message.destroy({
+        where: {userId}
+      });
+      //Delete User
       models.User.destroy({
         where: { id: userId },
       })

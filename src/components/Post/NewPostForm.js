@@ -51,6 +51,7 @@ const NewPostForm = () => {
           .then((data) => {
             localStorage.setItem("gagUrlImg", data);
             if(data.includes('.webm')|| data.includes('.mp4')){
+              console.log(data)
               return setVideo(data)
             }else{
               return setPostPicture(data);
@@ -66,20 +67,13 @@ const NewPostForm = () => {
     await console.log("img=", testImg);
   };
   const axiosTest = (id) => {
-    const promise = axios.get("http://localhost:8080/puppeteer/" + id);
+    const promise = axios.get("http://localhost:8080/puppeteer/" + id, {withCredentials: true});
 
     const dataPromise = promise.then((res) => res.data);
 
     return dataPromise;
   };
-  const handleMessageT = (e) => {
-    setMessage(e.target.value);
-    axiosTest()
-      .then((data) => {
-        setPostPicture(data);
-      })
-      .catch((err) => console.log(err));
-  };
+  
 
   const handlePicture = (e) => {
     setPostPicture(URL.createObjectURL(e.target.files[0]));

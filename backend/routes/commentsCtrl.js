@@ -9,7 +9,7 @@ module.exports = {
     //Getting auth header
     //Params
     var messageId = parseInt(req.params.messageId);
-    let userId = req.body.userId;
+    let userId = jwtUtils.getUserId(req.cookies.cookieToken);
     let content = req.body.content;
     asyncLib.waterfall(
       [

@@ -41,6 +41,7 @@ const SignUpForm = () => {
           email,
           password,
         },
+        withCredentials: true
       })
         .then((res) => {
           console.log(res);

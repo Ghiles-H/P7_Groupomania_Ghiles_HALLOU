@@ -10,10 +10,7 @@ let userLikedNow;
 module.exports = {
   likePost: function (req, res) {
     //Getting auth header
-    var cookieAuth = req.cookies.cookieToken;
-    var CookieUserId = jwtUtils.getUserId(cookieAuth);
-    var BodyUserId = req.body.id;
-    var userId = BodyUserId;
+    let userId = jwtUtils.getUserId(req.cookies.cookieToken);
     
    
 
@@ -116,12 +113,7 @@ module.exports = {
   },
   unlikePost: function (req, res) {
     console.log("START");
-    //Getting auth header
-    var headerAuth = req.headers["authorization"];
-    var headerUserId = jwtUtils.getUserId(headerAuth);
-    var BodyUserId = req.body.id;
-    var userId = BodyUserId
-
+    let userId = jwtUtils.getUserId(req.cookies.cookieToken);
     //Params
     var messageId = parseInt(req.params.messageId);
 
