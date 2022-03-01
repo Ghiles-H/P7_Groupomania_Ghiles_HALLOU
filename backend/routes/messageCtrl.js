@@ -2,6 +2,7 @@
 var models = require("../models");
 const asyncLib = require("async");
 const jwtUtils = require("../utils/jwt.utils");
+const fs = require('fs')
 
 // Constants
 var TITLE_LIMIT = 2;
@@ -162,6 +163,11 @@ module.exports = {
         async function(userFound, messageFound, done){
             console.log("userID = ", userFound.id);
             if(userFound.id == messageFound.UserId || userFound.isModerator == 1){
+              if(messageFound.attachment){
+                fs.unlink(messageFound.attachment.replace('./','../public/'), (err) =>{
+                  if(err) console.log(err)
+                })
+              }
                 await models.Like.destroy({
                   where: {messageId}
                 })
