@@ -431,6 +431,16 @@ module.exports = {
         where: {userId}
       });
       //Delete User
+      await models.User.findOne({
+        where:{id: userId}
+      }).then(function (userFound){
+        if(userFound.imgUrl){
+          console.log(userFound.imgUrl);
+          fs.unlink(userFound.imgUrl.replace('./','../public/'), (err) =>{
+            if(err) console.log(err)
+          })
+        }
+      })
       models.User.destroy({
         where: { id: userId },
       })
