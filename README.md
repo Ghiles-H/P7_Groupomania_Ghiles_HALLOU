@@ -28,4 +28,5 @@ Vous pouvez maintenant créer et migrer vos models de tables dans la base de don
 Pour finir, vous pouvez lancer les serveur Back et Front dans deux terminaux différent avec:
 
 *npm start* pour le Front
+
 *node server* ou *nodemon server* pour le Back
