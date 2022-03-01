@@ -43,7 +43,6 @@ const NewPostForm = () => {
 
   const handleMessage = async (e) => {
     let findLink = e.target.value.split(" ");
-    console.log("FL", findLink);
     for (let i = 0; i < findLink.length; i++) {
       if (findLink[i].includes("https://9gag.com")) {
         const gagId = findLink[i].split("/")[4];
@@ -51,7 +50,6 @@ const NewPostForm = () => {
           .then((data) => {
             localStorage.setItem("gagUrlImg", data);
             if(data.includes('.webm')|| data.includes('.mp4')){
-              console.log(data)
               return setVideo(data)
             }else{
               return setPostPicture(data);
@@ -64,7 +62,6 @@ const NewPostForm = () => {
     }
     let testImg = localStorage.getItem("gagUrlImg");
     setMessage(findLink.join(" "));
-    await console.log("img=", testImg);
   };
   const axiosTest = (id) => {
     const promise = axios.get("http://localhost:8080/puppeteer/" + id, {withCredentials: true});

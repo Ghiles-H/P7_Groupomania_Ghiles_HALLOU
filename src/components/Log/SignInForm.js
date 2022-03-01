@@ -6,7 +6,6 @@ const SignInForm = () => {
   const urlApi = "http://localhost:8080/api/users/login";
   const handelLogin = (e) => {
     e.preventDefault();
-    //const emailError = document.querySelector(".email.error");
     const passwordError = document.querySelector(".password.error");
     axios({
       method: "post",
@@ -18,7 +17,6 @@ const SignInForm = () => {
       },
     })
       .then((res) => {
-        //console.log("erreur !!! => ", res);
         passwordError.innerHTML = "";
         window.location = "/";
       })

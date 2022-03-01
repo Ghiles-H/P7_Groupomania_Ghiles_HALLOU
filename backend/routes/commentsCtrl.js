@@ -6,15 +6,14 @@ const jwtUtils = require("../utils/jwt.utils");
 // Routes
 module.exports = {
   createComment: function (req, res) {
-    //Getting auth header
+    
     //Params
     var messageId = parseInt(req.params.messageId);
     let userId = jwtUtils.getUserId(req.cookies.cookieToken);
     let content = req.body.content;
     asyncLib.waterfall(
       [
-        function (done) {
-          console.log("Waterfall function number = 1"); //Recherche le user qui commente
+        function (done) {//Recherche le user qui commente
           models.User.findOne({
             where: { id: userId },
           })
@@ -25,8 +24,7 @@ module.exports = {
               res.status(500).json({ error: "unable to verify user" });
             });
         },
-        function (userFound, done) {
-          console.log("Waterfall function number = 2"); //Recherche le message à commenter
+        function (userFound, done) {//Recherche le message à commenter
           models.Message.findOne({
             where: { id: messageId },
           })
@@ -37,8 +35,7 @@ module.exports = {
               res.status(500).json({ error: "unable to verify message" });
             });
         },
-        function (userFound, messageFound, done) {
-          console.log("Waterfall function number = 3"); //Crée le commentaire
+        function (userFound, messageFound, done) { //Crée le commentaire
           if (userFound) {
             models.Comment.create({
               content: content,
@@ -51,8 +48,7 @@ module.exports = {
             res.status(400).json({ error: "user or message not found" });
           }
         },
-        function (userFound, messageFound, newComment, done) {
-          console.log("Waterfall function number = 5"); //Incrémente de 1 le compteur de commentaire dans le message
+        function (userFound, messageFound, newComment, done) { //Incrémente de 1 le compteur de commentaire dans le message
           messageFound
             .update({
               comments: messageFound.comments + 1,
@@ -68,7 +64,6 @@ module.exports = {
         },
       ],
       function (messageFound, newComment) {
-        console.log("Waterfall function number = final");
         
         res.status(201).json({
           messageFound, 
@@ -96,7 +91,6 @@ module.exports = {
         }
       })
       .catch(function (err) {
-        console.log(err);
         res.status(500).json({ error: "invalid fields" });
       });
   },

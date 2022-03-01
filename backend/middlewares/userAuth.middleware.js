@@ -5,7 +5,6 @@ const JWT_SIGN_SECRET = "zk4J7JgkPDhxrFeHKkTSJbBtYPp4DNqds7asBgEH";
 
 module.exports = {
   checkUser: function (req, res, next) {
-    console.log("CHECK USER");
     const token = req.cookies.cookieToken;
 
     if (token) {

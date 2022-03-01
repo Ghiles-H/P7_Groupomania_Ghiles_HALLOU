@@ -23,7 +23,6 @@ module.exports = {
 
     asyncLib.waterfall([
       function (done) {
-        console.log("Waterfall function number = 1");
         models.Message.findOne({
           where: { id: messageId },
         })
@@ -35,7 +34,6 @@ module.exports = {
           });
       },
       function (messageFound, done) {
-        console.log("Waterfall function number = 2");
         if (messageFound) {
           models.User.findOne({
             where: { id: userId },
@@ -51,7 +49,6 @@ module.exports = {
         }
       },
       function (messageFound, userFound, done) {
-        console.log("Waterfall function number = 3");
         if (userFound) {
           models.Like.findOne({
             where: {
@@ -72,7 +69,6 @@ module.exports = {
         }
       },
       function (messageFound, userFound, isUserAlreadyLiked, done) {
-        console.log("Waterfall function number = 4");
         if (!isUserAlreadyLiked) {
           messageFound
             .addUser(userFound)
@@ -87,7 +83,6 @@ module.exports = {
         }
       },
       function (messageFound, userFound, isUserAlreadyLiked, done) {
-        console.log("Waterfall function number = 5");
         messageFound
           .update({
             likes: messageFound.likes + 1,
@@ -102,7 +97,6 @@ module.exports = {
           });
       },
       function (messageFound) {
-        console.log("Waterfall function number = final");
         if (messageFound) {
           return res.status(201).json({ nice: "message liked", messageFound });
         } else {
@@ -112,7 +106,6 @@ module.exports = {
     ]);
   },
   unlikePost: function (req, res) {
-    console.log("START");
     let userId = jwtUtils.getUserId(req.cookies.cookieToken);
     //Params
     var messageId = parseInt(req.params.messageId);
@@ -123,7 +116,6 @@ module.exports = {
 
     asyncLib.waterfall([
       function (done) {
-        console.log("Waterfall function number = 1");
         models.Message.findOne({
           where: { id: messageId },
         })
@@ -135,7 +127,6 @@ module.exports = {
           });
       },
       function (messageFound, done) {
-        console.log("Waterfall function number = 2");
         if (messageFound) {
           models.User.findOne({
             where: { id: userId },
@@ -151,7 +142,6 @@ module.exports = {
         }
       },
       function (messageFound, userFound, done) {
-        console.log("Waterfall function number = 3");
         if (userFound) {
           models.Like.findOne({
             where: {
@@ -172,7 +162,6 @@ module.exports = {
         }
       },
       function (messageFound, userFound, isUserAlreadyLiked, done) {
-        console.log("Waterfall function number = 4");
 
         if (isUserAlreadyLiked) {
           messageFound
@@ -188,7 +177,6 @@ module.exports = {
         }
       },
       function (messageFound, userFound, isUserAlreadyLiked, done) {
-        console.log("Waterfall function number = 5");
         messageFound
           .update({
             likes: messageFound.likes - 1,
@@ -201,19 +189,15 @@ module.exports = {
                 messageId: messageId,
               },
             })
-              .then(() => console.log("good"))
-              .catch(() => console.log("sorry not good"));
             done(null, messageFound);
           })
           .catch(function (err) {
-            console.log(err);
             res
               .status(500)
               .json({ error: "cannot update message like counter" });
           });
       },
       function (messageFound) {
-        console.log("Waterfall function number = final");
         if (messageFound) {
           return res
             .status(201)

@@ -7,7 +7,6 @@ import Log from "../components/Log";
 
 const Home = () => {
   const userData = useSelector((state) => state.userReducer);
-  console.log(userData.id);
   return (
     <div className="home">
       <LeftNav/>

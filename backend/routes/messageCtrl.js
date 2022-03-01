@@ -35,7 +35,6 @@ module.exports = {
     asyncLib.waterfall([
         
         function(done){
-            console.log('Waterfall function number = 1');
             models.User.findOne({
                 where: {id: userId}
             })
@@ -47,7 +46,6 @@ module.exports = {
             })
         },
         function(userFound, done){
-            console.log('Waterfall function number = 2');
             if(userFound){
                 models.Message.create({
                     title: title,
@@ -65,7 +63,6 @@ module.exports = {
             }
         },
     ], function(newMessage){
-        console.log('Waterfall function number = final');
          if(newMessage){
              res.status(201).json(newMessage);
          }else{
@@ -129,7 +126,6 @@ module.exports = {
 
     asyncLib.waterfall([
         function (done) {
-            console.log('Waterfall function number = 1');
           models.Message.findOne({
             where: { id: messageId },
           })
@@ -137,14 +133,12 @@ module.exports = {
               done(null, messageFound);
             })
             .catch(function (err) {
-                console.log(err);
               return res
                 .status(404)
                 .json({ error: "unable to verify message" });
             });
         },
         function (messageFound, done) {
-            console.log('Waterfall function number = 2');
           if (messageFound) {
             models.User.findOne({
               where: { id: userId },
@@ -153,7 +147,6 @@ module.exports = {
                 done(null, userFound, messageFound);
               })
               .catch(function (err) {
-                console.log(err);
                 return res.status(500).json({ error: "unable to verify user" });
               });
           } else {
@@ -161,7 +154,6 @@ module.exports = {
           }
         },
         async function(userFound, messageFound, done){
-            console.log("userID = ", userFound.id);
             if(userFound.id == messageFound.UserId || userFound.isModerator == 1){
               if(messageFound.attachment){
                 fs.unlink(messageFound.attachment.replace('./','../public/'), (err) =>{
@@ -185,7 +177,6 @@ module.exports = {
                   }
                 })
                 .catch(function(err){
-                  console.log(err);
                   return res.status(500).json({"error": "sorry it's bad :'( (.catch)"})
                 })
             }else{

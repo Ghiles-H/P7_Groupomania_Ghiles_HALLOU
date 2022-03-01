@@ -16,13 +16,11 @@ module.exports = {
     );
   },
   parseAutho: function (autho){
-    console.log("autho", autho)
     return (autho != null && autho.includes('Bearer ')) ? autho.replace('Bearer ', '') : autho ;
   },
   getUserId: function(userToken){
     var userId = -2;
     var token = module.exports.parseAutho(userToken);
-    console.log(userToken);
     if(token != null){
       try{
         var jwtToken = jwt.verify(token, JWT_SIGN_SECRET);

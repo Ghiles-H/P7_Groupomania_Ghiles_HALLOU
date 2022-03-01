@@ -186,20 +186,13 @@ module.exports = {
       token = cookieAuth;
     } else {
       token = headerAuth;
-      console.log("header=", headerAuth);
     }
     let userId = -1;
     userId = jwtUtils.getUserId(token);
 
     if (userId < 0) {
-      console.log("ERREUR");
-      console.log("USER ID ", userId); // if(userId = -1) => cookie+header = null; if(userId = -2) => pb cookie; if(userId = -3) => pb header
-
-      console.log("END");
       return res.status(401).json({ error: "wrong token." });
     } else {
-      console.log("SUCCESS");
-      console.log("USER ID ", userId);
 
       models.User.findOne({
         attributes: [
@@ -224,7 +217,6 @@ module.exports = {
           res.status(500).json({ error: "cannot fetch user" });
         });
     }
-    console.log("END");
   },
   getUserInfo: function (req, res) {
     const cookieAuth = req.cookies.cookieToken;
@@ -255,17 +247,8 @@ module.exports = {
       });
   },
   updateUserProfile: function (req, res) {
-    //Getting auth header
-    const cookieAuth = req.cookies.cookieToken;
-    var userIdCookie = jwtUtils.getUserId(cookieAuth);
-    var userIdParams = req.params.id;
-    let userId;
-
-    console.log("cookie", cookieAuth);
-    console.log("params", userIdParams);
-    if (userIdCookie) {
-      userId = userIdCookie;
-    } else {
+    var userId = jwtUtils.getUserId(req.cookies.cookieToken);
+    if (!userId) {
       return res.status(403).json({ error: "unable to verify user" });
     }
 
@@ -339,17 +322,14 @@ module.exports = {
               where: { id: userId },
             })
               .then(function (userFound) {
-                console.log("imgUrl=", userFound.imgUrl);
                 done(null, userFound);
               })
               .catch(function (err) {
-                console.log("err findOne", err);
                 return res.status(500).json({ error: "unable to verify user" });
               });
           },
           function (userFound, done) {
             if (userFound) {
-              console.log("REQFILE", req.file);
               const reqFilePath = req.file.path;
               userFound
                 .update({
@@ -359,7 +339,6 @@ module.exports = {
                   done(userFound);
                 })
                 .catch(function (err) {
-                  console.log("err update", err);
                   return res.status(500).json({ error: "cannot update user" });
                 });
             } else {
@@ -378,7 +357,6 @@ module.exports = {
         }
       );
     } catch (err) {
-      console.log("err userfound", err);
       return res.status(300).send({ message: err });
     }
   },
@@ -435,7 +413,6 @@ module.exports = {
         where:{id: userId}
       }).then(function (userFound){
         if(userFound.imgUrl){
-          console.log(userFound.imgUrl);
           fs.unlink(userFound.imgUrl.replace('./','../public/'), (err) =>{
             if(err) console.log(err)
           })

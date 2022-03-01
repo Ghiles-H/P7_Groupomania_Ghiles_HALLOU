@@ -32,11 +32,9 @@ export default function postReducer(state = initialState, action) {
           tabUnlikerPost = message.Users.filter(// eslint-disable-next-line
             (user) => user.id == action.payload.userId
           );
-          console.log("Unliker", tabUnlikerPost);
           tabLikerPost = message.Users.filter(
             (user) => user.id !== action.payload.userId
           );
-          console.log("Liker", tabLikerPost);
           return {
             ...message,
             likes: message.likes - 1,
