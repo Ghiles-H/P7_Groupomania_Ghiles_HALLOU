@@ -1,70 +1,31 @@
-# Getting Started with Create React App
+GROUPOMANIA 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Ceci est le dernier projet de ma formation Openclassrooms, création d'un réseau social d'entreprise : Groupomania
 
-## Available Scripts
+J'ai réalisé le Front comme le Back. Dans ce dernier, j'ai utilisé une base de donnée SQL et, sur les conseil de mon mentor, j'ai utilisé l'ORM Sequelize pour communiquer avec elle.
+Pour le Front, j'ai utilisé le framework React. Etant mon premier projet avec ce framework, je suis bien conscient que mon code est trés perfectible.
 
-In the project directory, you can run:
+Pour lancer le projet:
 
-### `npm start`
+Après avoir configurer et lancer un serveur en local à l'aide de MAMP par exemple, il faut installer node et toute les dépendances du front :
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+*npm i*
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Maintenant, il faut installer les dépendances du Back avec:
 
-### `npm test`
+*cd ./backend && npm i* 
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Il faut, à présent, initialiser et configurer sequelize:
 
-### `npm run build`
+*sequelize init*
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Entrer le mot de passe de votre base de donnée dans le fichier config.json précédemment créer,
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Vous pouvez maintenant créer et migrer vos models de tables dans la base de donnée à l'aide de:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+*sequelize db:create && sequelize db:migrate*
 
-### `npm run eject`
+Pour finir, vous pouvez lancer les serveur Back et Front dans deux terminaux différent avec:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+*npm start* pour le Front
+*node server* ou *nodemon server* pour le Back
